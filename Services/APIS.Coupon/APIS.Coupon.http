@@ -1,0 +1,6 @@
+@APIS.Coupon_HostAddress = http://localhost:5167
+
+GET {{APIS.Coupon_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
