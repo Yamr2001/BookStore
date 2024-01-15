@@ -20,6 +20,7 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSett
 
 
 builder.Services.AddScoped<IAuthServices, AuthServices>();
+builder.Services.AddScoped<IJwtGenrator, JwtGenrator>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 

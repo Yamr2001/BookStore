@@ -34,5 +34,18 @@ namespace APIS.Auth.Controllers
             }
             return Ok(_responseDto);
         }
-    }
+		[HttpPost("login")]
+		public async Task<IActionResult> Login([FromBody] LoginRequestDto model)
+		{
+			var loginResponse = await _authservices.Login(model);
+			if (loginResponse.UserDto == null)
+			{
+				_responseDto.IsSucsses = false;
+				_responseDto.Message = "User Name or Password is inncorrect";
+
+			}
+            _responseDto.Results = loginResponse;
+			return Ok(_responseDto);
+		}
+	}
 }

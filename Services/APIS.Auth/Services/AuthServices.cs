@@ -11,18 +11,46 @@ namespace APIS.Auth.Services
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManger;
-
-        public AuthServices(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManger)
+        private readonly IJwtGenrator _jwtGenrator;
+        public AuthServices(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManger, IJwtGenrator jwtGenrator)
         {
             _context = context;
             _userManager = userManager;
             _roleManger = roleManger;
+            _jwtGenrator = jwtGenrator;
         }
 
-        public Task<LoginResponseDto> Login(LoginRequestDto LoginRequestDto)
+        public async Task<LoginResponseDto> Login(LoginRequestDto LoginRequestDto)
         {
-            throw new NotImplementedException();
-        }
+            var user =  _context.ApplicationUsers.FirstOrDefault(x=>x.UserName == LoginRequestDto.UserName);
+			bool isValid = await _userManager.CheckPasswordAsync(user, LoginRequestDto.Password);
+
+
+			if (isValid == false && user != null)
+            {
+                return new LoginResponseDto { UserDto = null,Token = "" };
+            }
+            else
+            {
+				var token = _jwtGenrator.GenrateToken(user);
+				UserDto userDto = new()
+                {
+                    ID = user.Id,
+                    Email = user.Email,
+                    Name = user.Name,
+                    PhoneNumber = user.PhoneNumber
+                };
+
+
+                LoginResponseDto loginResponseDto = new LoginResponseDto
+                {
+                    UserDto = userDto,
+                    Token = token
+                };
+                return loginResponseDto;
+            }
+
+		}
 
         public async Task<string> Registration(RegisterationRequestDto RegisterationRequestDto)
         {
