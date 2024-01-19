@@ -20,6 +20,21 @@ namespace APIS.Auth.Services
             _jwtGenrator = jwtGenrator;
         }
 
+        public async Task<bool> AssignRole(string Email, string Role)
+        {
+            var user = _context.ApplicationUsers.FirstOrDefault(x => x.Email.ToLower() == Email.ToLower());
+            if(user !=null)
+            {
+                if (!_roleManger.RoleExistsAsync(Role).GetAwaiter().GetResult()) { 
+                _roleManger.CreateAsync(new IdentityRole(Role)).GetAwaiter().GetResult();
+                }
+                await _userManager.AddToRoleAsync(user, Role);
+                return true;
+            }
+            return false;
+           
+        }
+
         public async Task<LoginResponseDto> Login(LoginRequestDto LoginRequestDto)
         {
             var user =  _context.ApplicationUsers.FirstOrDefault(x=>x.UserName == LoginRequestDto.UserName);

@@ -30,7 +30,8 @@ namespace APIS.Auth.Controllers
 
                 _responseDto.IsSucsses = false;
                 _responseDto.Message = errormessage;
-            
+                return BadRequest(_responseDto);
+
             }
             return Ok(_responseDto);
         }
@@ -47,5 +48,18 @@ namespace APIS.Auth.Controllers
             _responseDto.Results = loginResponse;
 			return Ok(_responseDto);
 		}
-	}
+        [HttpPost("AssignRole")]
+        public async Task<IActionResult> AssignRole([FromBody] RegisterationRequestDto model)
+        {
+            var assignrole = await _authservices.AssignRole(model.Email,model.Role.ToUpper());
+            if (!assignrole)
+            {
+                _responseDto.IsSucsses = false;
+                _responseDto.Message = "This is Not Assign Role";
+                return BadRequest(_responseDto);
+
+            }
+            return Ok(_responseDto);
+        }
+    }
 }

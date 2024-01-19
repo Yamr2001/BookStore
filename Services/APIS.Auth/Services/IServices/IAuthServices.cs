@@ -6,5 +6,6 @@ namespace APIS.Auth.Services.IServices
     {
         Task<string> Registration(RegisterationRequestDto RegisterationRequestDto);
         Task<LoginResponseDto> Login(LoginRequestDto LoginRequestDto);   
+        Task<bool> AssignRole(string Email,string Role);
     }
 }

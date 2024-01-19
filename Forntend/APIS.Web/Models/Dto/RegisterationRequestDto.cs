@@ -1,4 +1,4 @@
-﻿namespace APIS.Auth.Models.Dto
+﻿namespace APIS.Web.Models.Dto
 {
     public class RegisterationRequestDto
     {
