@@ -1,6 +1,6 @@
-﻿using APIS.Coupon.Data;
-using APIS.Coupon.Models.Dto;
-using APIS.Web.Utility;
+﻿using APIS.Products.Data;
+using APIS.Products.Models;
+using APIS.Products.Models.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -8,15 +8,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIS.Coupon.Controllers
 {
-    [Route("api/coupon")]
+    [Route("api/Product")]
     [ApiController]
-    public class CouponApiController : ControllerBase
+    public class ProductApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly ResponseDto _responseDto;
 
-        public CouponApiController(ApplicationDbContext context, IMapper mapper)
+        public ProductApiController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -24,13 +24,13 @@ namespace APIS.Coupon.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ResponseDto> Get()
         {
             try
             {
-                IEnumerable<Coupon> couponDtos = _context.Coupons.ToList();
-                _responseDto.Results = _mapper.Map<IEnumerable<CouponDto>>(couponDtos);    
+                IEnumerable<Product> couponDtos = _context.Products.ToList();
+                _responseDto.Results = _mapper.Map<IEnumerable<ProductDto>>(couponDtos);    
 
             }
             catch (Exception ex)
@@ -42,33 +42,14 @@ namespace APIS.Coupon.Controllers
         }
         [HttpGet]
         [Route("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
 
         public async Task<ResponseDto> GetbyId(int id)
         {
             try
             {
-                Coupon coupon = _context.Coupons.FirstOrDefault(C=>C.CouponId == id);
-                _responseDto.Results = _mapper.Map<CouponDto>(coupon);
-
-            }
-            catch (Exception ex)
-            {
-                _responseDto.Message = ex.Message;
-                _responseDto.IsSucsses = false;
-            }
-            return _responseDto;
-        }
-        [HttpGet]
-        [Route("GetbyCode/{code}")]
-        [Authorize(Roles = "Admin")]
-
-        public async Task<ResponseDto> GetbyCode(string code)
-        {
-            try
-            {
-                Coupon coupon = _context.Coupons.FirstOrDefault(C => C.CouponCode == code);
-                _responseDto.Results = _mapper.Map<CouponDto>(coupon);
+                Product product = _context.Products.FirstOrDefault(C=>C.ProductId == id);
+                _responseDto.Results = _mapper.Map<ProductDto>(product);
 
             }
             catch (Exception ex)
@@ -79,16 +60,16 @@ namespace APIS.Coupon.Controllers
             return _responseDto;
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
 
-        public async Task<ResponseDto> POST(CouponDto model)
+        public async Task<ResponseDto> POST(ProductDto model)
         {
             try
             {
-                Coupon coupon = _mapper.Map<Coupon>(model);
-                _context.Coupons.Add(coupon);
+                Product coupon = _mapper.Map<Product>(model);
+                _context.Products.Add(coupon);
                 _context.SaveChanges();
-                _responseDto.Results = _mapper.Map<Coupon>(model);
+                _responseDto.Results = _mapper.Map<Product>(model);
 
             }
             catch (Exception ex)
@@ -99,16 +80,16 @@ namespace APIS.Coupon.Controllers
             return _responseDto;
         }
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
 
-        public async Task<ResponseDto> PUT(CouponDto model)
+        public async Task<ResponseDto> PUT(ProductDto model)
         {
             try
             {
-                Coupon coupon = _mapper.Map<Coupon>(model);
-                _context.Coupons.Update(coupon);
+                Product coupon = _mapper.Map<Product>(model);
+                _context.Products.Update(coupon);
                 _context.SaveChanges();
-                _responseDto.Results = _mapper.Map<Coupon>(model);
+                _responseDto.Results = _mapper.Map<Product>(model);
 
             }
             catch (Exception ex)
@@ -126,8 +107,8 @@ namespace APIS.Coupon.Controllers
         {
             try
             {
-                Coupon coupon = _context.Coupons.FirstOrDefault(C=>C.CouponId== id);
-                _context.Coupons.Remove(coupon);
+                Product coupon = _context.Products.FirstOrDefault(C=>C.ProductId== id);
+                _context.Products.Remove(coupon);
                 _context.SaveChanges();
             }
             catch (Exception ex)

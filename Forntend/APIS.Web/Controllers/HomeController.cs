@@ -1,4 +1,6 @@
 using APIS.Web.Models;
+using APIS.Web.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -17,7 +19,7 @@ namespace APIS.Web.Controllers
         {
             return View();
         }
-
+        [Authorize(Roles = SD.Admin)]
         public IActionResult Privacy()
         {
             return View();

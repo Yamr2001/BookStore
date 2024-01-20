@@ -47,7 +47,8 @@ namespace APIS.Auth.Services
             }
             else
             {
-				var token = _jwtGenrator.GenrateToken(user);
+                var roles = await _userManager.GetRolesAsync(user);
+				var token = _jwtGenrator.GenrateToken(user,roles);
 				UserDto userDto = new()
                 {
                     ID = user.Id,

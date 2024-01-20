@@ -4,6 +4,6 @@ namespace APIS.Auth.Services.IServices
 {
 	public interface IJwtGenrator
 	{
-		string GenrateToken(ApplicationUser ApplicationUser);
+		string GenrateToken(ApplicationUser ApplicationUser,IEnumerable<string>roles);
 	}
 }

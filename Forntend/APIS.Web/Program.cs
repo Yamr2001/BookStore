@@ -1,6 +1,7 @@
 using APIS.Web.Services;
 using APIS.Web.Services.IServices;
 using APIS.Web.Utility;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,12 @@ builder.Services.AddScoped<IBaseServices, BaseServices>();
 builder.Services.AddScoped<ICouponServices, CouponServices>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromHours(10);
+    options.LoginPath = "/auth/login";
+    options.AccessDeniedPath = "/Auth/AcssesDenied";
+});
 
 var app = builder.Build();
 
@@ -32,7 +39,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

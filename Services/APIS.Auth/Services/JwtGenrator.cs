@@ -17,7 +17,7 @@ namespace APIS.Auth.Services
 			_jwtOptions = jwtOptions.Value;
 		}
 
-		public string GenrateToken(ApplicationUser ApplicationUser)
+		public string GenrateToken(ApplicationUser ApplicationUser, IEnumerable<string> roles)
 		{
 			var tokenhandler = new JwtSecurityTokenHandler();
 			var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
@@ -28,6 +28,8 @@ namespace APIS.Auth.Services
 				new Claim (JwtRegisteredClaimNames.Sub, ApplicationUser.Id),
 				new Claim (JwtRegisteredClaimNames.Name, ApplicationUser.UserName),
 			};
+
+			cliamlist.AddRange(roles.Select(role=> new Claim (ClaimTypes.Role,role)));
 
 			var tokenDescriptior = new SecurityTokenDescriptor
 			{

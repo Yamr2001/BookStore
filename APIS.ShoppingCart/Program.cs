@@ -1,5 +1,5 @@
-using APIS.Coupon;
-using APIS.Coupon.Data;
+using APIS.ShoppingCart;
+using APIS.ShoppingCart.Data;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

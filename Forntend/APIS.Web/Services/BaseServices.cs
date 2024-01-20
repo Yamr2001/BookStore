@@ -10,19 +10,25 @@ namespace APIS.Web.Services
     public class BaseServices : IBaseServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-
-        public BaseServices(IHttpClientFactory httpClientFactory)
+        private readonly ITokenProvider _tokenProvider;
+        public BaseServices(IHttpClientFactory httpClientFactory, ITokenProvider tokenProvider)
         {
             _httpClientFactory = httpClientFactory;
+            _tokenProvider = tokenProvider;
         }
 
-        public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
+        public async Task<ResponseDto?> SendAsync(RequestDto requestDto,bool WithBearer)
         {
             try
             {
                 HttpClient client = _httpClientFactory.CreateClient("APICLIENT");
                 HttpRequestMessage message = new();
                 message.Headers.Add("Accept", "application/json");
+                if (WithBearer)
+                {
+                    var token = _tokenProvider.GetToken();
+                    message.Headers.Add("Authroiztion", $"Bearer {token}");
+                }
                 message.RequestUri = new Uri(requestDto.Url);
                 if (requestDto.Data != null)
                 {

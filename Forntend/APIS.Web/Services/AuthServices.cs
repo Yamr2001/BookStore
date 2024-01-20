@@ -21,7 +21,7 @@ namespace APIS.Web.Services
                 Data = RegisterationRequestDto,
                 Url = SD.APIAuthBase+ "/api/auth/AssignRole"
 
-            });
+            },WithBearer:false);
         }
 
         public async Task<ResponseDto?> Login(LoginRequestDto loginRequestDto)
@@ -32,7 +32,7 @@ namespace APIS.Web.Services
                 Data = loginRequestDto,
                 Url = SD.APIAuthBase + "/api/auth/login"
 
-            });
+            }, WithBearer: false);
         }
 
         public async Task<ResponseDto?> Registeration(RegisterationRequestDto RegisterationRequestDto)
@@ -43,7 +43,7 @@ namespace APIS.Web.Services
                 Data = RegisterationRequestDto,
                 Url = SD.APIAuthBase + "/api/auth/Registeration"
 
-            });
+            }, WithBearer: false);
         }
     }
 }
