@@ -23,7 +23,36 @@ namespace APIS.ShoppingCart.Controllers
             _context = context;
         }
 
-        [HttpPost]
+        [HttpGet("GetCart/{userId}")]
+        public async Task<ResponseDto> GetCart(string userId)
+        {
+            try
+            {
+                CartDto cartDto = new()
+                {
+                    CartHeader = _mapper.Map<CartHeaderDto>(_context.cartHeaders.First(u=>u.UserId == userId))
+                };
+                cartDto.CartDetailsDtos = _mapper.Map<IEnumerable<CartDetailsDto>>
+                    (_context.cartDetails
+                    .Where(u=> u.CartHeaderId == cartDto.CartHeader.CartHeaderId));
+
+                foreach (var item in cartDto.CartDetailsDtos)
+                {
+                    cartDto.CartHeader.CartTotal += (item.Count * item.Product.Price);
+                }
+                _responseDto.Results = cartDto;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.IsSucsses = false;
+            }
+            return _responseDto;
+        }
+
+
+
+        [HttpPost("CartUpsert")]
         public async Task<ResponseDto> CartUpsert(CartDto cartDto)
         {
             try
@@ -64,6 +93,31 @@ namespace APIS.ShoppingCart.Controllers
                     }
                     _responseDto.Results = cartDto;
                 }
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.IsSucsses = false;
+            }
+            return _responseDto;
+        }
+
+        [HttpDelete("CartRemove")]
+        public async Task<ResponseDto> CartRemove([FromQuery] int cartDetailsId)
+        {
+            try
+            {
+                var CartDetailsFromDb = await _context.cartDetails
+                    .FirstOrDefaultAsync(u => u.CartDetailsId == cartDetailsId);
+                int totalCountofCartItems = _context.cartDetails.Where(u=>u.CartHeaderId == CartDetailsFromDb.CartHeaderId).Count();
+                _context.cartDetails.Remove(CartDetailsFromDb);
+               if(totalCountofCartItems == 1)
+                {
+                    var CartHeaderToDelete = await _context.cartHeaders.FirstOrDefaultAsync(u=> u.CartHeaderId == CartDetailsFromDb.CartHeaderId);
+                    _context.cartHeaders.Remove(CartHeaderToDelete);
+                }
+               await _context.SaveChangesAsync();
+               _responseDto.Results = true;
             }
             catch (Exception ex)
             {
